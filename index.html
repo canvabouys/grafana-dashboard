@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="US-en">
+<head>
+    <title>Monitoring Dashboards - OrthoSecure</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Grafana_logo.svg/1200px-Grafana_logo.svg.png" type="image/png">
+
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #1f1f1f, #2d2d2d); 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 { 
+            color: #ff6600; 
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .subtitle {
+            color: #ccc;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        .dashboard-grid { 
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            max-width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .dashboard-frame {
+            width: 100%;
+            height: 550px;
+            border: 2px solid #444;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #2a2a2a;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .dashboard-frame:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255,102,0,0.2);
+        }
+        .dashboard-title {
+            background: #333;
+            padding: 15px;
+            font-weight: 500;
+            border-bottom: 1px solid #555;
+            color: #ff6600;
+        }
+        iframe { 
+            width: 100%; 
+            height: calc(100% - 60px); 
+            border: none; 
+            background: white;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 1.2rem;
+            color: #999;
+        }
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background: #28a745;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .status-indicator.offline {
+            background: #dc3545;
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .dashboard-frame {
+                height: 400px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-indicator" id="status">
+        🟢 Live Monitoring
+    </div>
+    
+    <div class="header">
+        <h1>System Monitoring Dashboards</h1>
+        <p class="subtitle">Real-time infrastructure monitoring and analytics</p>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-frame">
+            <div class="dashboard-title">📊 Kubernetes API Server Metrics</div>
+            <iframe 
+                src="https://grafana.orthosecure.work.gd/d/k8s_system_apisrv/kubernetes-system-api-server?kiosk=1&refresh=30s"
+                loading="lazy"
+                title="Kubernetes API Server Dashboard">
+            </iframe>
+        </div>
+        
+        <div class="dashboard-frame">
+            <div class="dashboard-title">🖥️ Node Exporter Metrics</div>
+            <iframe 
+                src="https://grafana.orthosecure.work.gd/d/rYdddlPWk_node_ex/node-exporter-full?kiosk=1&refresh=30s"
+                loading="lazy"
+                title="Node Exporter Dashboard">
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        // Check if Grafana is accessible
+        function checkGrafanaStatus() {
+            const iframe = document.querySelector('iframe');
+            const status = document.getElementById('status');
+            
+            iframe.onload = function() {
+                status.textContent = '🟢 Live Monitoring';
+                status.className = 'status-indicator';
+            };
+            
+            iframe.onerror = function() {
+                status.textContent = '🔴 Connection Error';
+                status.className = 'status-indicator offline';
+            };
+        }
+        
+        // Auto refresh page every 30 minutes
+        setTimeout(function() {
+            window.location.reload();
+        }, 1800000);
+        
+        checkGrafanaStatus();
+    </script>
+</body>
+</html>
